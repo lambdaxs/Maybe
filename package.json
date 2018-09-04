@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "dev": "NODE_ENV=dev node ./src/main.js",
+    "prod": "NODE_ENV=prod node ./src/main.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
+    "express-fileupload": "^0.4.0",
+    "mongodb": "^3.1.4",
+    "redis": "^2.8.0"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "mongos":{
+    "db1":{
+      "addr": "mongodb://127.0.0.1:27017",
+      "dbnames":["test1","test2","test3"]
+    },
+    "db2":{
+      "addr": "mongodb://127.0.0.1:27017",
+      "dbnames":["test1","test2","test3"]
+    }
+  },
+  "redis":{
+    "rd1":{
+      "addr":"redis://127.0.0.1:6379"
+    },
+    "rd2":{
+      "addr":"redis://127.0.0.1:6379"
+    },
+    "queue":{
+      "addr":"redis://127.0.0.1:6379"
+    }
+  },
+  "queue":{
+    "report":{
+      "key":"queue:report"
+    }
+  }
+}

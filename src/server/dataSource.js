@@ -93,6 +93,11 @@ router.post('/mongo', MongoMW, async function (req, res) {
     });
 });
 
+//mongo join call
+router.post('/mongo/join',MongoMW,async(req,res)=>{
+    
+});
+
 
 //redis call
 router.post('/redis', RedisMW, function (req, res) {

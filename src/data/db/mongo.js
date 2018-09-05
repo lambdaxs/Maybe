@@ -16,7 +16,7 @@ const Init = async () => {
     dbnames.forEach(dbname => {
       ClientMap[name] = client;
       DBMap[`${name}$${dbname}`] = client.db(dbname);
-      console.log(`mongodb:${addr} db:${dbname} connect success`)
+      console.log(`mongodb name:${name} addr:${addr} db:${dbname} connect success`)
     })
   }
 };

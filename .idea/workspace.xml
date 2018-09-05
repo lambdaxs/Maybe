@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9d91d96e-685d-4498-97a9-5c345f756849" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/function/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/merge.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/server/dataSource.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/dataSource.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/merge.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/merge.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -26,8 +22,8 @@
       <file leaf-file-name="merge.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test/merge.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="319">
-              <caret line="43" column="18" lean-forward="true" selection-start-line="43" selection-start-column="18" selection-end-line="43" selection-end-column="18" />
+            <state relative-caret-position="370">
+              <caret line="63" column="14" lean-forward="true" selection-start-line="63" selection-start-column="14" selection-end-line="63" selection-end-column="14" />
             </state>
           </provider>
         </entry>
@@ -73,8 +69,8 @@
         <option value="$PROJECT_DIR$/src/main.js" />
         <option value="$PROJECT_DIR$/src/server/dataSource.js" />
         <option value="$PROJECT_DIR$/src/function/index.js" />
-        <option value="$PROJECT_DIR$/test/merge.js" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/test/merge.js" />
       </list>
     </option>
   </component>
@@ -186,12 +182,12 @@
       <workItem from="1535777662953" duration="148000" />
       <workItem from="1535885017831" duration="107000" />
       <workItem from="1536073101943" duration="5288000" />
-      <workItem from="1536118290052" duration="9710000" />
+      <workItem from="1536118290052" duration="10453000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="42868000" />
+    <option name="totallyTimeSpent" value="43611000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1241" height="777" extended-state="6" />
@@ -424,8 +420,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test/merge.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="319">
-          <caret line="43" column="18" lean-forward="true" selection-start-line="43" selection-start-column="18" selection-end-line="43" selection-end-column="18" />
+        <state relative-caret-position="370">
+          <caret line="63" column="14" lean-forward="true" selection-start-line="63" selection-start-column="14" selection-end-line="63" selection-end-column="14" />
         </state>
       </provider>
     </entry>

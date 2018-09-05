@@ -65,3 +65,15 @@ const c4 = {
 
     }
 };
+
+const exec = (ops)=>{
+  const context = {};
+  for (let i=0;i<cals.length;i++){
+      const {type='',metadata={},context=''} = ops[i];
+      if (type === 'db'){
+
+      }else if (type === 'cal'){
+
+      }
+  }
+};

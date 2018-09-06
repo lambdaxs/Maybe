@@ -9,7 +9,7 @@ const Init = ()=>{
     const {addr} = redis[name];
     const client = redisClient.createClient({url:addr});
     ClientMap[name] = client;
-    console.log(`redis client:${addr} connect success`)
+    console.log(`redis client name:${name}  addr:${addr} connect success`)
   })
 };
 

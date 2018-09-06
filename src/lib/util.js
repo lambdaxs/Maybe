@@ -32,6 +32,28 @@ const format_query = (query)=>{
     return obj
 };
 
+const format_args_query = (context,query)=>{
+    const obj = {};
+    Object.keys(query).forEach(key=>{
+        if (key === '$and' || key === '$or'){//递归解析and和or
+            obj[key] = query[key].map(function (data) {
+                return format_args_query(context,data);
+            });
+        }else if (typeof query[key] === 'object'){//继续递归解析
+            obj[key] = format_args_query(context,query[key])
+        }else if (typeof query[key] === 'string'){//
+            let value = query[key];
+            if (value.startsWith('context.')){
+                obj[key] = eval(value)
+            }
+        }else {
+            obj[key] = query[key];
+        }
+    });
+    return obj
+};
+
 module.exports = {
-    format_query
+    format_query,
+    format_args_query
 };

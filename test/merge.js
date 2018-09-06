@@ -27,53 +27,95 @@ const join = () => {
 };
 
 const c1 = {
-    type:'db',
-    metadata:{
+    cal: 'db',
+    metadata: {
         name: "db1",
         dbname: "test",
         colname: "item_log",
         cmd: "find",
         args: [{item_id: 1}, {}],
     },
-    context:'itemList'
+    context: 'itemList'
 };
 
 const c2 = {
-    type:'cal',
-    metadata:{
-        cmd:'map',
-        args:['context.itemList','(v)=>{v.uid}']
+    cal: 'cal',
+    metadata: {
+        cmd: 'map',
+        args: ['context.itemList', '(v)=>{v.uid}']
     },
-    context:'uids'
+    context: 'uids'
 };
 
 const c3 = {
-    type:'db',
-    metadata:{
+    cal: 'db',
+    metadata: {
         name: "db1",
         dbname: "test",
         colname: "user",
         cmd: "find",
-        args: [{_id:{$in:'context.uids'}}, {}],
+        args: [{_id: {$in: 'context.uids'}}, {}],
     },
-    context:'users'
+    context: 'users'
 };
 
-const c4 = {
-    type:'cal',
-    metadata:{
-
+const systemUtil = {
+    map: function (array, f) {
+        return array.map(f)
+    },
+    filter: function (array, f) {
+        return array.filter(f)
+    },
+    reduce: function (array, f, init) {
+        return array.reduce(f.init)
+    },
+    sort: function (array, f) {
+        return array.sort(f)
+    },
+    find: function (array, f) {
+        return array.find(f)
+    },
+    join: function (array, str) {
+        return array.join(str)
     }
 };
 
-const exec = (ops)=>{
-  const context = {};
-  for (let i=0;i<cals.length;i++){
-      const {type='',metadata={},context=''} = ops[i];
-      if (type === 'db'){
+const usersUtil = {};
 
-      }else if (type === 'cal'){
-
-      }
-  }
+const dbFind = async (name, dbname, colname) => {
+    return [{
+        name,
+        dbname,
+        colname
+    }]
 };
+
+const exec = async (ops) => {
+    const context = {};
+    for (let i = 0; i < ops.length; i++) {
+        const {cal = '', metadata = {}, context: context_key = ''} = ops[i];
+        let {cmd = '', args = []} = metadata;
+
+
+        if (cal === 'db') {//预编译解码
+            const {name, dbname, colname} = metadata;
+            args = util.format_args_query(context,args[0]={});
+            context[context_key] = await dbFind(name, dbname, colname)
+        } else if (cal === 'cal') {//cmd 可定义扩展 系统自带 map filter reduce sort find join
+            const cal_func = systemUtil[cmd];
+            if (!cal_func) {
+                throw new Error(`op[${i}]计算单元错误，cmd：${cmd}错误，找不到对应cal_func`)
+            }
+            args = args.map(exp=>{//预编译解码args中的数据变量
+                if (typeof exp === 'string'){
+                    return eval(exp);
+                }else {
+                    return exp;
+                }
+            });
+            context[context_key] = cal_func(...args);
+        }
+    }
+    console.log(context)
+};
+

@@ -1,17 +1,11 @@
-const express = require('express');
-const router = express.Router();
 const mongo = require('../data/db/mongo');
 const common = require('../common/funcName');
 const check = require('../../config/check');
 const util = require('../lib/util');
 
 
-const Init = async () => {
-    await mongo.Init();
-};
-
 //middleware
-const MongoMW = (req, res, next) => {
+const mw = (req, res, next) => {
     const {metadata = {}} = req.body;
     const {name = '', dbname = '', colname = '', cmd = '', args = []} = metadata;
     if (!check.isMongoName(name)) {
@@ -37,7 +31,7 @@ const MongoMW = (req, res, next) => {
 };
 
 //monogo call
-router.post('/mongo', MongoMW, async function (req, res) {
+const call = async function (req, res) {
     const {metadata = {}} = req.body;
     const {name = '', dbname = '', colname = '', cmd = '', args = []} = metadata;
     const model = new mongo.MongoCall({
@@ -61,9 +55,9 @@ router.post('/mongo', MongoMW, async function (req, res) {
     }).catch(err => {
         return res.json({code: 101, msg: `mongo op error ${err.message}`});
     });
-});
+};
 
 module.exports = {
-    Init,
-    router
+    mw,
+    call
 };

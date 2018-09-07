@@ -1,16 +1,7 @@
-const express = require('express');
-const router = express.Router();
 const mq = require('../data/mq/queue');
-const common = require('../common/funcName');
 const check = require('../../config/check');
-const util = require('../lib/util');
 
-
-const Init = async () => {
-
-};
-
-const MqMW = (req,res,next)=>{
+const mw = (req,res,next)=>{
     const {metadata = {}} = req.body;
     const {name = '', cmd = '', args = []} = metadata;
     if (!check.isQueueName(name)){
@@ -23,7 +14,7 @@ const MqMW = (req,res,next)=>{
 };
 
 //mq call
-router.post('/mq',MqMW, async function (req, res) {
+const call = async function (req, res) {
     const {metadata = {}} = req.body;
     const {name='',cmd='',args=[]} = metadata;
     const model = new mq.MsgQueue({name});
@@ -32,9 +23,9 @@ router.post('/mq',MqMW, async function (req, res) {
     }).catch(err=>{
         return res.json({code:301,msg:'mq op error '+err.message});
     })
-});
+};
 
 module.exports = {
-    Init,
-    router
+    mw,
+    call
 };

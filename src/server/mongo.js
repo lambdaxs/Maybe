@@ -2,6 +2,7 @@ const mongo = require('../data/db/mongo');
 const common = require('../common/funcName');
 const check = require('../../config/check');
 const util = require('../lib/util');
+const log = require('../log/index');
 
 
 //middleware
@@ -30,10 +31,13 @@ const mw = (req, res, next) => {
     next()
 };
 
+const logger = log.getLogger('mongo');
+
 //monogo call
 const call = async function (req, res) {
     const {metadata = {}} = req.body;
     const {name = '', dbname = '', colname = '', cmd = '', args = []} = metadata;
+
     const model = new mongo.MongoCall({
         name,
         dbname,
@@ -51,8 +55,10 @@ const call = async function (req, res) {
     }
 
     task.then(rs => {
+        logger.info({metadata,result:rs});
         return res.json({code: 0, data: rs})
     }).catch(err => {
+        logger.error({metadata,error:err.message});
         return res.json({code: 101, msg: `mongo op error ${err.message}`});
     });
 };

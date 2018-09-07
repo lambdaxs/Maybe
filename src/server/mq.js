@@ -1,5 +1,8 @@
 const mq = require('../data/mq/queue');
 const check = require('../../config/check');
+const log = require('../log');
+
+const logger = log.getLogger('mq');
 
 const mw = (req,res,next)=>{
     const {metadata = {}} = req.body;
@@ -19,8 +22,10 @@ const call = async function (req, res) {
     const {name='',cmd='',args=[]} = metadata;
     const model = new mq.MsgQueue({name});
     model[cmd](...args).then(data=>{
+        logger.info({metadata,result:data});
         return res.json({code:0,data});
     }).catch(err=>{
+        logger.error({metadata,error:err.message});
         return res.json({code:301,msg:'mq op error '+err.message});
     })
 };

@@ -1,6 +1,9 @@
 const redis = require('../data/redis/redis');
 const common = require('../common/funcName');
 const check = require('../../config/check');
+const log = require('../log');
+
+const logger = log.getLogger('redis');
 
 const mw = (req, res, next) => {
     const {metadata = {}} = req.body;
@@ -24,8 +27,10 @@ const call = function (req, res) {
     const model = new redis.RedisCall({name}).Model();
     model[cmd](...args, (err, rs) => {
         if (err) {
+            logger.error({metadata,error:err.message});
             return res.json({code: 201, msg: `redis op error ${err.message}`});
         } else {
+            logger.info({metadata,result:rs});
             return res.json({code: 0, data: rs})
         }
     })

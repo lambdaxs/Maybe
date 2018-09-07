@@ -2,15 +2,13 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
 const cors = require("cors");
-const log4js = require('log4js');
-const logger = require('../log/index');
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(fileUpload());
-app.use(log4js.connectLogger(logger.getLogger('normal'),{level:log4js.levels.INFO}));
+
 
 const router = express.Router();
 

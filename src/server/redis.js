@@ -1,16 +1,8 @@
-const express = require('express');
-const router = express.Router();
 const redis = require('../data/redis/redis');
 const common = require('../common/funcName');
 const check = require('../../config/check');
 
-
-const Init = async () => {
-    redis.Init();
-};
-
-
-const RedisMW = (req, res, next) => {
+const mw = (req, res, next) => {
     const {metadata = {}} = req.body;
     const {name = '', cmd = '', args = []} = metadata;
     if (!check.isRedisName(name)) {
@@ -26,7 +18,7 @@ const RedisMW = (req, res, next) => {
 };
 
 //redis call
-router.post('/redis', RedisMW, function (req, res) {
+const call = function (req, res) {
     const {metadata = {}} = req.body;
     const {name = '', cmd = '', args = []} = metadata;
     const model = new redis.RedisCall({name}).Model();
@@ -37,9 +29,9 @@ router.post('/redis', RedisMW, function (req, res) {
             return res.json({code: 0, data: rs})
         }
     })
-});
+};
 
 module.exports = {
-    Init,
-    router
+    mw,
+    call
 };

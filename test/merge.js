@@ -32,10 +32,10 @@ const c3 = {
 };
 
 const c4 = {
-    cal:'cal',
-    metadata:{
-        cmd:'value',
-        args:['context',`(c)=>{
+    cal: 'cal',
+    metadata: {
+        cmd: 'value',
+        args: ['context', `(c)=>{
             let {users,itemList} = c;
             itemList = itemList.map(v=>{
                 const user = users.find(u=>u._id.toString() === v.uid)||{name:''};
@@ -45,15 +45,15 @@ const c4 = {
             return itemList;
         }`]
     },
-    context:'result'
+    context: 'result'
 };
 
 const c5 = {
-  cal:'cal',
-  metadata:{
-      cmd:'value',
-      args:['context.result',`v=>v`]
-  }
+    cal: 'cal',
+    metadata: {
+        cmd: 'value',
+        args: ['context.result', `v=>v`]
+    }
 };
 
 const systemUtil = {
@@ -75,7 +75,7 @@ const systemUtil = {
     join: function (array, str) {
         return array.join(str)
     },
-    value:function (v,f) {
+    value: function (v, f) {
         return f(v);
     }
 };
@@ -83,9 +83,9 @@ const systemUtil = {
 const usersUtil = {};
 const mongo = require('../src/data/db/mongo');
 const redis = require('../src/data/redis/redis');
-const util  = require('../src/lib/util');
+const util = require('../src/lib/util');
 
-const exec = async (ops) => {
+const exec = async (params,ops) => {
 
     await mongo.Init();
     redis.Init();
@@ -98,66 +98,80 @@ const exec = async (ops) => {
 
         if (cal === 'db') {//预编译解码
             const {name, dbname, colname} = metadata;
-            let [query={},option={}] = args;
-            query = util.format_query(util.format_args_query(context,query));
-            const model = new mongo.MongoCall({name,dbname,colname}).Model();
-            try{
-                if (cmd === 'find'){
-                    context[context_key] = await model[cmd](query,option).toArray();
-                }else {
-                    context[context_key] = await model[cmd](query,option);
+            let [query = {}, option = {}] = args;
+            query = util.format_query(util.format_args_query(context, params, query));
+            const model = new mongo.MongoCall({name, dbname, colname}).Model();
+            let result = null;
+            try {
+                if (cmd === 'find') {
+                    result = await model[cmd](query, option).toArray();
+                } else {
+                    result = await model[cmd](query, option);
                 }
-            }catch (err){
-                console.log('db op err '+err.message);
-                break
+            } catch (err) {
+                throw new Error(`op[${i}]计算单元错误，mongo cmd：${cmd}错误，args:${args}`);
+            }
+            if (context_key){
+                context[context_key] = result;
+            }else {
+                return result;
             }
         } else if (cal === 'cal') {//cmd 可定义扩展 系统自带 map filter reduce sort find join
             const cal_func = systemUtil[cmd];
             if (!cal_func) {
                 throw new Error(`op[${i}]计算单元错误，cmd：${cmd}错误，找不到对应cal_func`)
             }
-            args = args.map(exp=>{//预编译解码args中的数据变量
-                if (typeof exp === 'string'){
+            args = args.map(exp => {//预编译解码args中的数据变量
+                if (typeof exp === 'string') {
                     return eval(exp);
-                }else {
+                } else {
                     return exp;
                 }
             });
             const result = cal_func(...args);
-            if (context_key){
+            if (context_key) {
                 context[context_key] = result;
-            }else {
+            } else {
                 return result
             }
-        }else if (cal === 'redis'){
+        } else if (cal === 'redis') {//args中的key-value都可以包含中间结果变量
             const {name} = metadata;
-            args = args.map(exp=>{//预编译解码args中的数据变量
-                if (typeof exp === 'string'){
-                    return eval(exp);
-                }else {
+            args = args.map(exp => {//预编译解码args中的数据变量
+                if (typeof exp === 'string') {
+                    if (exp.startsWith('context.') || exp.startsWith('params.')) {
+                        return eval(exp);
+                    }
+                    return exp;
+                } else {
                     return exp;
                 }
             });
             const model = new redis.RedisCall({name}).Model();
-            try{
-                const func = ()=>{
-                    return new Promise((s,f)=>{
-                        model[cmd](query,option).then(
-
-                        )
+            try {
+                const func = () => {
+                    return new Promise((s, f) => {
+                        model[cmd](query, option).then(rs =>
+                          s(rs)
+                        ).catch(err => {
+                            f(err)
+                        })
                     })
                 };
-                context[context_key] = await ;
-            }catch (err){
-                console.log('db op err '+err.message);
-                break
+                const result = await func();
+                if (context_key){
+                    context[context_key] =  result;
+                }else {
+                    return result;
+                }
+            } catch (err) {
+                throw new Error(`op[${i}]计算单元错误，cmd：${cmd} redis存取失败`)
             }
         }
     }
     return context;
 };
 
-(async()=>{
-    const rs = await exec([c1,c2,c3,c4,c5]);
+(async () => {
+    const rs = await exec([c1, c2, c3, c4, c5]);
     console.log(rs);
 })();

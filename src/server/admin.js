@@ -2,17 +2,18 @@ const express = require('express');
 const router = express.Router();
 const mongo = require('../data/db/mongo');
 const redis = require('../data/redis/redis');
+const ID = require('mongodb').ObjectId;
 
 
 router.post('/api/list',async(req,res)=>{
-    const{url='',comment='',offset,limit=20} = req.body;
+    const{url,comment,offset,limit=20} = req.body;
 
     const query = {};
-    if (!url){
-        query.url = new RegExp(url,'ig')
+    if (url){
+        query.url = {$regex:url}
     }
-    if (!comment){
-        query.comment = new RegExp(comment,'ig')
+    if (comment){
+        query.comment = {$regex:comment}
     }
 
     const model = new mongo.MongoCall({
@@ -23,9 +24,6 @@ router.post('/api/list',async(req,res)=>{
 
     const total_count = await model.countDocuments(query);
     const list = await model.find(query,{skip:offset,limit,projection:{request:1}}).toArray();
-    console.log(req.body);
-    console.log(list);
-
     return res.json({
         code:0,
         data:{
@@ -55,7 +53,7 @@ router.post('/api/add',async(req,res)=>{
         test
     };
 
-    return model.save(data).then(rs=>{
+    return model.insertOne(data).then(rs=>{
         return res.json({code:0,data:rs});
     }).catch(err=>{
         return res.json({code:1,msg:err.message});
@@ -71,7 +69,7 @@ router.post('/api/detail',async(req,res)=>{
         colname:'apis',
     }).Model();
 
-    const data = await model.findOne({_id:_id});
+    const data = await model.findOne({_id:ID(_id)});
     return res.json({
         code:0,
         data:data
@@ -122,7 +120,7 @@ router.post('/api/del',async(req,res)=>{
 });
 
 router.post('/api/build',async(req,res)=>{//生成文档
-
+    return res.json({code:0})
 });
 
 router.post('/api/deploy',async(req,res)=>{//生成静态文件,记录git版本

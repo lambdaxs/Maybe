@@ -5,7 +5,7 @@ const c1 = {
         dbname: "test1",
         colname: "items",
         cmd: "find",
-        args: [{}, {}],
+        args: [{'name':'params.name'}, {}],
     },
     context: 'itemList'
 };
@@ -14,7 +14,7 @@ const c2 = {
     cal: 'cal',
     metadata: {
         cmd: 'map',
-        args: ['context.itemList', 'v=>v.uid']
+        args: ['context.itemList', 'v=>v._id']
     },
     context: 'uids'
 };
@@ -150,7 +150,7 @@ const exec = async (params,ops) => {
             try {
                 const func = () => {
                     return new Promise((s, f) => {
-                        model[cmd](query, option).then(rs =>
+                        model[cmd](...args).then(rs =>
                           s(rs)
                         ).catch(err => {
                             f(err)
@@ -172,6 +172,12 @@ const exec = async (params,ops) => {
 };
 
 (async () => {
-    const rs = await exec([c1, c2, c3, c4, c5]);
-    console.log(rs);
+    try{
+        const rs = await exec({name:'xiaos'},[c1,c2]);
+        console.log(rs);
+        mongo.closeAll();
+        redis.closeAll();
+    }catch (err){
+        console.log(err)
+    }
 })();

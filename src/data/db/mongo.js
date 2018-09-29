@@ -13,6 +13,9 @@ const Init = async () => {
     const value = mongos[name];
     const {addr, dbnames} = value;
     const client = await createMongoClient(addr);
+    client.on('close',()=>{
+       console.log(`mongo:${name} close success`)
+    });
     dbnames.forEach(dbname => {
       ClientMap[name] = client;
       DBMap[`${name}$${dbname}`] = client.db(dbname);

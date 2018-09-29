@@ -2,7 +2,7 @@
   "mongos":{
     "db1":{
       "addr": "mongodb://127.0.0.1:27017",
-      "dbnames":["test1","test2","test3"]
+      "dbnames":["admin"]
     },
     "db2":{
       "addr": "mongodb://127.0.0.1:27017",

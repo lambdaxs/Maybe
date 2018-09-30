@@ -112,7 +112,7 @@ router.post('/api/del',async(req,res)=>{
         colname:'apis',
     }).Model();
 
-    return model.delete({_id:ID(_id)}).then(rs=>{
+    return model.deleteOne({_id:ID(_id)}).then(rs=>{
         return res.json({code:0,data:rs})
     }).catch(err=>{
         return res.json({code:1,message:err.message})

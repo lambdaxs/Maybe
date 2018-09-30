@@ -97,7 +97,7 @@ router.post('/api/update',async(req,res)=>{
         test
     };
 
-    return model.updateOne({_id:_id},{$set:data}).then(rs=>{
+    return model.updateOne({_id:ID(_id)},{$set:data}).then(rs=>{
         return res.json({code:0,data:rs});
     }).catch(err=>{
         return res.json({code:1,msg:err.message});
@@ -112,7 +112,7 @@ router.post('/api/del',async(req,res)=>{
         colname:'apis',
     }).Model();
 
-    return model.delete({_id:_id}).then(rs=>{
+    return model.delete({_id:ID(_id)}).then(rs=>{
         return res.json({code:0,data:rs})
     }).catch(err=>{
         return res.json({code:1,message:err.message})
